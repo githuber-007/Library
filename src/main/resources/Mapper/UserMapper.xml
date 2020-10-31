@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wcx.Dao.UserMapper">
+    <resultMap id="userBase" type="com.wcx.pojo.User">
+        <id column="userID" property="userID"/>
+        <result property="userName" column="userName"/>
+        <result column="password" property="password"/>
+        <result property="credit" column="credit"/>
+        <result property="tel" column="tel"/>
+        <result property="sex" column="sex"/>
+    </resultMap>
+
+    <resultMap id="userVo" type="com.wcx.pojo.vo.UserVo" extends="userBase">
+        <collection property="rentBooks" ofType="com.wcx.pojo.vo.RentedBook">
+            <id property="bookID" column="bookID"/>
+            <result property="rentDate" column="rentDate"/>
+            <result property="bookName" column="title"/>
+            <result property="returnDate" column="returnDate"/>
+        </collection>
+    </resultMap>
+    <select id="findAllUser" resultType="com.wcx.pojo.User">
+        select * from user
+    </select>
+
+    <select id="findRentedBookByUserID" resultMap="userVo">
+        select user.*,rent.rentDate,rent.returnDate,book.title
+        from user
+        inner join rent on rent.userID=user.userID
+        inner join book on book.bookID=rent.BookID
+        where user.userID=#{id}
+    </select>
+    <select id="findUserByID" resultType="com.wcx.pojo.User">
+        select * from user where userID=#{id}
+    </select>
+
+    <insert id="insertUser" parameterType="com.wcx.pojo.User">
+        insert into user(userName,password,tel,sex)
+        values (#{userName},#{password},#{tel},#{sex});
+    </insert>
+
+    <update id="updateUser" parameterType="com.wcx.pojo.User">
+        update user
+        <set>
+            <if test="userName!=null">
+                userName=#{userName},
+            </if>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="tel!=null">
+                tel= #{tel},
+            </if>
+            <if test="sex!=null">
+                sex=#{sex},
+            </if>
+            <if test="credit!=null">
+                credit=#{credit},
+            </if>
+        </set>
+        where userID=#{userID}
+    </update>
+    <delete id="deleteUserByID" parameterType="int">
+        delete from user where userID=#{id}
+    </delete>
+</mapper>

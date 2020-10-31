@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcx.Dao.RentMapper">
+    <resultMap id="rentVo" type="com.wcx.pojo.vo.RentVo">
+        <result column="userName" property="userName"/>
+        <result property="BookName" column="title"/>
+        <result column="returnDate" property="returnDate"/>
+        <result column="rentDate" property="rentDate"/>
+    </resultMap>
+
+    <select id="queryAllRecords" resultMap="rentVo">
+        select user.userName,book.title,rent.returnDate,rent.rentDate
+        from rent
+        inner join user on user.userID=rent.userID
+        inner join book on book.bookID=rent.bookID
+    </select>
+
+    <insert id="insertARecord" parameterType="com.wcx.pojo.Rent">
+        insert into rent(userID,bookID,rentDate,returnDate)
+        values (#{userID},#{bookID},#{rentDate},#{returnDate});
+    </insert>
+
+    <delete id="deleteARecord" parameterType="int">
+        delete from rent where rentID=#{id}
+    </delete>
+</mapper>

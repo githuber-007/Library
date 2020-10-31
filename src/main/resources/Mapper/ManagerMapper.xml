@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcx.Dao.ManagerMapper">
+
+
+
+
+    <select id="findAllManager" resultType="com.wcx.pojo.Manager">
+        select * from manager;
+    </select>
+
+    <select id="findManagerByID" resultType="com.wcx.pojo.Manager">
+        select * from manager where managerID=#{id}
+    </select>
+
+
+    <select id="findManagerByName" resultType="com.wcx.pojo.Manager">
+        select * from manager where name=#{name}
+    </select>
+
+    <delete id="deleteManagerByID" parameterType="int">
+        delete from manager where managerID=#{id}
+    </delete>
+
+    <update id="updateManager" parameterType="com.wcx.pojo.Manager">
+        update manager
+        <set>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="workNumber!=null">
+                workNumber=#{workNumber},
+            </if>
+            <if test="tel!=null">
+                tel=#{tel},
+            </if>
+            <if test="salary!=null">
+                salary=#{salary},
+            </if>
+        </set>
+        where managerID=#{managerID}
+    </update>
+    <insert id="insertManager" parameterType="com.wcx.pojo.Manager">
+        insert into manager(name,password,workNumber,tel,salary)
+        values (#{name},#{password},#{workNumber},#{tel},#{salary});
+    </insert>
+</mapper>

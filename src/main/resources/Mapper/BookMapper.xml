@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcx.Dao.BookMapper">
+    <resultMap id="bookBase" type="com.wcx.pojo.Book">
+        <id property="bookID" column="bookID"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="author" column="author"/>
+        <result column="restNum" property="restNum"/>
+        <result property="price" column="price"/>
+    </resultMap>
+    <select id="findAllBook" resultType="com.wcx.pojo.Book">
+        select * from book
+    </select>
+
+    <resultMap id="bookVo" type="com.wcx.pojo.vo.BookVo" extends="bookBase" >
+        <collection property="labels" ofType="com.wcx.pojo.Label" resultMap="com.wcx.Dao.LabelMapper.labelBase">
+        </collection>
+    </resultMap>
+    <select id="findBookWithLabelByID" resultMap="bookVo">
+        select book.*,label.*
+        from book
+        inner join mark on book.bookID=mark.bookID
+        inner join label on label.labelID=mark.labelID
+        where book.bookID=#{id}
+    </select>
+
+    <select id="findBookByID" resultType="com.wcx.pojo.Book">
+        select * from book where BookID=#{id}
+    </select>
+
+    <select id="findBookByName" resultType="com.wcx.pojo.Book">
+        select * from book where title=#{name}
+    </select>
+
+    <select id="getTotal" resultType="int">
+        select count(1) from book
+    </select>
+    <insert id="insertBook" parameterType="com.wcx.pojo.Book">
+        insert into book(title,summary,author,restNum,price)
+        values (#{title},#{summary},#{author},#{restNum},#{price});
+    </insert>
+
+    <update id="updateBook" parameterType="com.wcx.pojo.Book">
+        update book
+        <set>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="summary!=null">
+                summary=#{summary},
+            </if>
+            <if test="author!=null">
+                author=#{author},
+            </if>
+            <if test="restNum!=null">
+                restNum=#{restNum},
+            </if>
+            <if test="price!=null">
+                price=#{price},
+            </if>
+        </set>
+        where bookID=#{bookID}
+    </update>
+
+    <delete id="deleteBookByID" parameterType="int">
+        delete from book where bookID=#{id}
+    </delete>
+</mapper>

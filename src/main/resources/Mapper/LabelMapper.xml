@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcx.Dao.LabelMapper">
+    <resultMap id="labelBase" type="com.wcx.pojo.Label">
+        <id property="labelID" column="labelID"/>
+        <result property="labelName" column="labelName"/>
+        <result property="detail" column="detail"/>
+    </resultMap>
+
+    <resultMap id="labelVo" type="com.wcx.pojo.vo.LabelVo" extends="labelBase">
+        <collection property="books" ofType="com.wcx.pojo.Label" resultMap="com.wcx.Dao.BookMapper.bookBase"/>
+    </resultMap>
+    <select id="findAllLabel" resultType="com.wcx.pojo.Label">
+        select * from label
+    </select>
+
+    <select id="findLabelWithBookByID" resultMap="labelVo">
+        select label.*,book.*
+        from label
+        inner join mark on mark.labelID=label.labelID
+        inner  join book on mark.bookID=book.bookID
+        where label.labelID=#{id}
+    </select>
+    <select id="findLabelByID" resultType="com.wcx.pojo.Label">
+        select * from label where labelID=#{id}
+    </select>
+
+    <insert id="insertLabel" parameterType="com.wcx.pojo.Label">
+        insert into label(labelName,detail)
+        values (#{labelName},#{detail});
+    </insert>
+
+    <update id="updateLabel" parameterType="com.wcx.pojo.Label">
+        update label
+        <set>
+            <if test="labelName!=null">
+                labelName=#{LabelName},
+            </if>
+            <if test="detail!=null">
+                detail=#{detail},
+            </if>
+
+        </set>
+        where labelID=#{labelID}
+    </update>
+
+    <delete id="deleteLabelByID" parameterType="int">
+        delete from Label where labelID=#{id}
+    </delete>
+</mapper>

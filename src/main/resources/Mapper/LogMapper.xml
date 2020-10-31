@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wcx.Dao.LogMapper">
+    <resultMap id="logvo" type="com.wcx.pojo.vo.LogVo">
+        <id property="logID" column="logID"/>
+        <association property="manager" column="operator" select="com.wcx.Dao.ManagerMapper.findManagerByID"/>
+    </resultMap>
+
+<!--    查全部记录-->
+    <select id="findAllLog" resultType="com.wcx.pojo.Log">
+        select * from manager_log
+    </select>
+
+
+<!--    查记录总数-->
+    <select id="getTotal" resultType="int">
+        select count(1) from manager_log;
+    </select>
+
+<!--    根据操作人ID查找对应的所有记录-->
+    <select id="findLogListByID" resultType="com.wcx.pojo.Log">
+        select * from manager_log
+        where operator=#{id}
+    </select>
+
+<!--找出一条日志记录对应的操作者的详细信息-->
+    <select id="getManager" resultMap="logvo">
+        select * from manager_log l,manager m
+        where l.operator=m.managerID and l.logID=#{logID}
+    </select>
+
+
+    <insert id="insertLog" parameterType="com.wcx.pojo.Log"
+        useGeneratedKeys="true" keyProperty="logID">
+        insert into manager_Log(operation,operator,operateDate,description)
+        values (#{operation},#{operator},#{operateDate},#{description});
+    </insert>
+
+
+</mapper>
